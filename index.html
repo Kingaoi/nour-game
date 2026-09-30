@@ -1,0 +1,1685 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#0a5c50">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="نور">
+<title>نور — لعبة الكلمة القرآنية</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230e6b5c'/%3E%3Ctext x='50' y='72' font-size='60' text-anchor='middle' fill='white' font-family='serif'%3Eن%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Amiri+Quran&family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+*{
+  -webkit-tap-highlight-color: transparent !important;
+  -webkit-tap-highlight-color: rgba(0,0,0,0) !important;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+html{
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  -webkit-text-size-adjust: 100%;
+}
+body{
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  overscroll-behavior-y: none;
+}
+button,.key,.tile,.icon-btn,.close-btn,.toggle{
+  -webkit-tap-highlight-color: transparent !important;
+  touch-action: manipulation;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#faf7f0;--card:#fff;--text:#151515;--text-2:#4a453d;--text-3:#8b8375;
+  --border:#e8e0d0;--border-2:#f0eade;
+  --primary:#0e6b5c;--primary-2:#12917c;--primary-3:#1aa88f;
+  --primary-soft:#e3f1ee;--primary-glow:rgba(14,107,92,.15);
+  --gold:#b8860b;--gold-2:#d4a017;--gold-soft:#faf3e0;
+  --green:#0e6b5c;--yellow:#c9a22e;
+  --gray:#a8a196;--gray-d:#78726a;
+  --tile-border:#d4cbb8;--tile-border-2:#b8ad95;
+  --key-bg:#e2dccf;--key-text:#151515;
+  --key-hover:#d5ccba;
+  --shadow:0 4px 20px rgba(80,60,30,.08);
+  --shadow-lg:0 20px 60px rgba(80,60,30,.15);
+  --ease:cubic-bezier(.4,0,.2,1);
+  --cols:5;
+  --tile-size:clamp(13px,calc(85px / var(--cols)),19px);
+  --key-height:44px;
+}
+html[data-theme="dark"]{
+  --bg:#0f151c;--card:#1a222c;--text:#eee9de;--text-2:#c9c2b6;--text-3:#8b95a3;
+  --border:#232c38;--border-2:#1c242e;
+  --primary:#2dd4bf;--primary-2:#5eead4;--primary-3:#99f6e4;
+  --primary-soft:#0d2b28;--primary-glow:rgba(45,212,191,.2);
+  --gold:#d4af37;--gold-2:#e5c565;--gold-soft:#2a2416;
+  --green:#12917c;--yellow:#b8941f;
+  --gray:#5a6169;--gray-d:#40464d;
+  --tile-border:#3a4450;--tile-border-2:#525c69;
+  --key-bg:#3a4450;--key-text:#eee9de;
+  --key-hover:#4a5560;
+  --shadow:0 4px 20px rgba(0,0,0,.4);
+  --shadow-lg:0 20px 60px rgba(0,0,0,.6);
+}
+html,body{height:100%}
+body{
+  font-family:'Cairo',system-ui,-apple-system,sans-serif;
+  background:var(--bg);color:var(--text);min-height:100vh;
+  overflow-x:hidden;transition:background .3s,color .3s;
+  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+  display:flex;flex-direction:column;
+  padding-top:env(safe-area-inset-top,0);
+  padding-bottom:env(safe-area-inset-bottom,0);
+}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.04;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='none' stroke='%230e6b5c' stroke-width='1'%3E%3Cpath d='M40 6 L47 33 L74 40 L47 47 L40 74 L33 47 L6 40 L33 33 Z'/%3E%3Ccircle cx='40' cy='40' r='14'/%3E%3C/g%3E%3C/svg%3E");
+}
+html[data-theme="dark"] body::before{
+  opacity:.06;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='none' stroke='%232dd4bf' stroke-width='1'%3E%3Cpath d='M40 6 L47 33 L74 40 L47 47 L40 74 L33 47 L6 40 L33 33 Z'/%3E%3Ccircle cx='40' cy='40' r='14'/%3E%3C/g%3E%3C/svg%3E");
+}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;font-size:inherit}
+:focus-visible{outline:2px solid var(--primary);outline-offset:2px;border-radius:4px}
+:focus:not(:focus-visible){outline:none}
+
+/* شعار المستخدم في تيليغرام */
+.user-chip{
+  display:none;
+  align-items:center;gap:6px;
+  padding:4px 10px;border-radius:20px;
+  background:color-mix(in srgb,var(--primary) 10%,transparent);
+  font-size:11.5px;font-weight:600;color:var(--primary);
+  margin-top:6px;
+}
+.user-chip.show{display:inline-flex}
+.user-chip svg{width:12px;height:12px}
+
+.app{
+  position:relative;z-index:1;display:flex;flex-direction:column;
+  min-height:100vh;min-height:100dvh;
+  max-width:540px;margin:0 auto;width:100%;padding:0 12px;
+}
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:10px;padding:14px 4px;height:60px;
+}
+.brand{
+  display:flex;align-items:center;gap:10px;
+  font-size:20px;font-weight:800;color:var(--text);letter-spacing:-.3px;
+}
+.brand-mark{
+  width:36px;height:36px;border-radius:11px;
+  background:linear-gradient(135deg,var(--primary),var(--primary-3));
+  display:grid;place-items:center;color:#fff;font-size:20px;font-weight:700;
+  font-family:'Amiri',serif;
+  box-shadow:0 6px 18px -6px var(--primary);
+  position:relative;overflow:hidden;
+}
+.brand-mark::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,transparent 40%,rgba(255,255,255,.3));
+}
+.topbar-actions{display:flex;gap:2px}
+.icon-btn{
+  width:40px;height:40px;border-radius:10px;display:grid;place-items:center;
+  color:var(--text-2);transition:background .15s,color .15s,transform .1s;
+}
+.icon-btn:hover{background:var(--border);color:var(--text)}
+.icon-btn:active{transform:scale(.94);background:var(--border)}
+.icon-btn svg{width:20px;height:20px}
+
+.game{flex:1;display:flex;flex-direction:column;align-items:center;gap:14px;padding:4px 0 12px}
+
+.clue-card{
+  width:100%;max-width:440px;padding:18px 20px;
+  background:var(--card);
+  border:1px solid var(--border);border-radius:16px;
+  box-shadow:var(--shadow);text-align:center;
+  position:relative;overflow:hidden;
+}
+.clue-card::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 15% 10%,var(--primary-soft),transparent 55%);
+  opacity:.7;pointer-events:none;
+}
+.clue-card-inner{position:relative;z-index:1}
+.clue-cat{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:11px;font-weight:700;letter-spacing:.4px;
+  color:var(--primary);padding:4px 12px;border-radius:20px;
+  background:color-mix(in srgb,var(--primary) 12%,transparent);
+  margin-bottom:12px;
+}
+.clue-cat svg{width:12px;height:12px}
+.clue-meaning{
+  font-family:'Amiri',serif;
+  font-size:19px;font-weight:700;
+  line-height:1.6;color:var(--text);
+  margin-bottom:10px;
+}
+.clue-hint{
+  font-size:12.5px;
+  display:inline-flex;align-items:center;gap:6px;
+  padding:4px 10px;border-radius:8px;
+  background:var(--gold-soft);
+  color:var(--gold);font-weight:600;
+}
+.clue-hint svg{width:12px;height:12px}
+.clue-length{
+  display:inline-flex;align-items:center;gap:4px;
+  font-size:11px;color:var(--text-3);font-weight:600;
+  padding:3px 9px;border-radius:8px;
+  background:var(--border-2);
+  margin-right:6px;
+}
+.clue-difficulty{
+  display:inline-flex;align-items:center;gap:4px;
+  font-size:10.5px;font-weight:700;
+  padding:3px 9px;border-radius:8px;
+  margin-right:6px;
+}
+.clue-difficulty.easy{background:#d4edda;color:#155724}
+.clue-difficulty.medium{background:#fff3cd;color:#856404}
+.clue-difficulty.hard{background:#f8d7da;color:#721c24}
+html[data-theme="dark"] .clue-difficulty.easy{background:#0d2b28;color:#2dd4bf}
+html[data-theme="dark"] .clue-difficulty.medium{background:#2a2416;color:#d4af37}
+html[data-theme="dark"] .clue-difficulty.hard{background:#2b1212;color:#e57373}
+
+.grid{
+  display:grid;grid-template-rows:repeat(6,1fr);
+  gap:4px;width:100%;max-width:230px;
+  aspect-ratio:var(--cols) / 6;
+  margin:4px auto;
+}
+.row{display:grid;grid-template-columns:repeat(var(--cols),1fr);gap:4px;direction:rtl}
+.tile{
+  aspect-ratio:1;display:grid;place-items:center;
+  border:2px solid var(--tile-border);border-radius:7px;
+  font-family:'Cairo',sans-serif;
+  font-size:var(--tile-size);font-weight:700;
+  color:var(--text);background:transparent;
+  transition:border-color .2s,background .2s,color .2s;
+  position:relative;
+}
+.tile.filled{
+  border-color:var(--tile-border-2);
+  animation:pop .12s ease-out;
+}
+@keyframes pop{
+  0%{transform:scale(.92)}
+  50%{transform:scale(1.06)}
+  100%{transform:scale(1)}
+}
+.tile.correct{
+  background:var(--green);border-color:var(--green);color:#fff;
+  animation:flip .6s ease forwards;
+}
+.tile.present{
+  background:var(--yellow);border-color:var(--yellow);color:#fff;
+  animation:flip .6s ease forwards;
+}
+.tile.absent{
+  background:var(--gray);border-color:var(--gray);color:#fff;
+  animation:flip .6s ease forwards;
+}
+@keyframes flip{
+  0%{transform:rotateX(0)}
+  50%{transform:rotateX(-90deg)}
+  100%{transform:rotateX(0)}
+}
+.row.shake{animation:shake .5s}
+@keyframes shake{
+  0%,100%{transform:translateX(0)}
+  20%,60%{transform:translateX(-6px)}
+  40%,80%{transform:translateX(6px)}
+}
+.row.win .tile{animation:bounce .7s ease}
+@keyframes bounce{
+  0%,100%{transform:translateY(0)}
+  30%{transform:translateY(-16px)}
+  60%{transform:translateY(4px)}
+}
+
+.keyboard{
+  width:100%;max-width:540px;
+  display:flex;flex-direction:column;gap:5px;
+  padding:8px 0 4px;margin-top:auto;
+}
+.kb-row{display:flex;gap:4px;justify-content:center;direction:rtl}
+.key{
+  flex:1;min-width:0;height:var(--key-height);border-radius:8px;
+  background:var(--key-bg);color:var(--key-text);
+  display:grid;place-items:center;
+  font-family:'Cairo',sans-serif;
+  font-size:16px;font-weight:600;
+  transition:background .15s,transform .08s,color .15s;
+  padding:0 2px;
+}
+.key:hover{background:var(--key-hover)}
+.key:active{transform:scale(.93);background:var(--key-hover)}
+.key.wide{flex:1.5;font-size:11px;font-weight:700}
+.key.correct{background:var(--green);color:#fff}
+.key.present{background:var(--yellow);color:#fff}
+.key.absent{background:var(--gray-d);color:#fff}
+.key.correct:hover,.key.present:hover,.key.absent:hover{filter:brightness(1.08)}
+.key.correct:active,.key.present:active,.key.absent:active{filter:brightness(.95)}
+.key svg{width:18px;height:18px}
+
+.overlay{
+  position:fixed;inset:0;background:rgba(10,20,15,.5);
+  backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+  z-index:200;opacity:0;pointer-events:none;transition:.25s;
+}
+.overlay.show{opacity:1;pointer-events:all}
+.modal{
+  position:fixed;top:50%;left:50%;
+  transform:translate(-50%,-46%) scale(.96);
+  z-index:210;background:var(--card);
+  border-radius:20px;width:min(500px,94vw);max-height:88vh;
+  display:flex;flex-direction:column;
+  box-shadow:var(--shadow-lg);
+  opacity:0;pointer-events:none;transition:.3s var(--ease);
+  border:1px solid var(--border);overflow:hidden;
+}
+.modal.show{opacity:1;pointer-events:all;transform:translate(-50%,-50%) scale(1)}
+.modal-head{
+  padding:18px 22px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  background:linear-gradient(180deg,var(--card),color-mix(in srgb,var(--card) 95%,var(--primary-soft)));
+}
+.modal-head h3{
+  font-size:17px;font-weight:700;display:flex;align-items:center;gap:8px;
+}
+.modal-head h3 svg{width:18px;height:18px;color:var(--primary)}
+.modal-body{padding:22px;overflow-y:auto;flex:1;overscroll-behavior:contain}
+.modal-body::-webkit-scrollbar{width:6px}
+.modal-body::-webkit-scrollbar-thumb{background:var(--border);border-radius:6px}
+.close-btn{
+  width:34px;height:34px;border-radius:9px;display:grid;place-items:center;
+  color:var(--text-2);transition:.15s;
+}
+.close-btn:hover{background:var(--border);color:var(--text)}
+.close-btn:active{transform:scale(.94)}
+
+.reveal-hero{
+  text-align:center;padding:8px 0 20px;position:relative;
+}
+.reveal-icon{
+  width:64px;height:64px;margin:0 auto 14px;
+  border-radius:50%;
+  background:linear-gradient(135deg,var(--primary),var(--primary-3));
+  display:grid;place-items:center;color:#fff;
+  box-shadow:0 12px 32px -6px var(--primary-glow);
+  animation:revealPop .6s var(--ease);
+}
+.reveal-icon svg{width:30px;height:30px}
+@keyframes revealPop{
+  0%{transform:scale(0) rotate(-90deg)}
+  60%{transform:scale(1.15) rotate(10deg)}
+  100%{transform:scale(1) rotate(0)}
+}
+.reveal-word{
+  font-family:'Amiri',serif;font-size:38px;font-weight:700;
+  color:var(--primary);letter-spacing:-.5px;
+  line-height:1.2;margin-bottom:8px;
+  animation:fadeInUp .5s var(--ease) .2s backwards;
+}
+@keyframes fadeInUp{
+  from{opacity:0;transform:translateY(10px)}
+  to{opacity:1;transform:translateY(0)}
+}
+.reveal-cat{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:11.5px;font-weight:700;color:var(--primary);
+  padding:4px 12px;border-radius:20px;
+  background:color-mix(in srgb,var(--primary) 12%,transparent);
+  animation:fadeInUp .5s var(--ease) .3s backwards;
+}
+.reveal-meaning{
+  font-family:'Amiri',serif;
+  font-size:17px;line-height:1.8;color:var(--text-2);
+  padding:18px 20px;margin:16px 0;
+  background:var(--border-2);border-radius:14px;
+  text-align:center;
+  border-right:3px solid var(--gold);
+  animation:fadeInUp .5s var(--ease) .4s backwards;
+}
+.reveal-ayah{
+  padding:18px 20px;margin:16px 0;
+  background:linear-gradient(135deg,var(--primary-soft),color-mix(in srgb,var(--primary-soft) 50%,transparent));
+  border-radius:14px;
+  position:relative;overflow:hidden;
+  animation:fadeInUp .5s var(--ease) .5s backwards;
+}
+.reveal-ayah::before{
+  content:'﴿';position:absolute;top:-30px;right:8px;
+  font-size:120px;color:color-mix(in srgb,var(--primary) 10%,transparent);
+  font-family:'Amiri',serif;line-height:1;
+}
+.reveal-ayah-text{
+  font-family:'Amiri Quran','Amiri',serif;
+  font-size:20px;line-height:2;color:var(--text);
+  text-align:center;direction:rtl;
+  position:relative;z-index:1;
+}
+.reveal-ayah-ref{
+  font-size:12px;color:var(--primary);font-weight:600;
+  text-align:center;margin-top:10px;
+  position:relative;z-index:1;
+}
+
+.reveal-extended{
+  margin:16px 0;
+  padding:18px 20px;
+  background:var(--card);
+  border:1.5px solid var(--border);
+  border-radius:14px;
+  animation:fadeInUp .5s var(--ease) .6s backwards;
+}
+.reveal-extended-head{
+  display:flex;align-items:center;gap:8px;
+  font-size:12px;font-weight:700;color:var(--primary);
+  margin-bottom:12px;
+  padding-bottom:10px;
+  border-bottom:1px solid var(--border-2);
+}
+.reveal-extended-head svg{width:14px;height:14px}
+.reveal-tafsir-text{
+  font-size:14px;line-height:2;color:var(--text-2);
+  font-family:'Cairo',sans-serif;
+  white-space:pre-wrap;
+}
+.reveal-tafsir-loading{
+  display:flex;align-items:center;justify-content:center;
+  gap:10px;padding:14px;color:var(--text-3);font-size:13px;
+}
+.reveal-tafsir-loading .spinner{
+  width:20px;height:20px;border:2.5px solid var(--border);
+  border-top-color:var(--primary);border-radius:50%;
+  animation:spin .8s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.reveal-tafsir-error{
+  font-size:13px;color:var(--text-3);text-align:center;padding:12px;
+}
+
+.reveal-actions{
+  display:flex;gap:8px;margin-top:16px;flex-wrap:wrap;
+}
+.reveal-action{
+  flex:1;min-width:120px;
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  padding:11px 16px;border-radius:11px;font-size:13px;font-weight:700;
+  transition:.15s;text-decoration:none;
+}
+.reveal-action:active{transform:scale(.96)}
+.reveal-action.primary{background:var(--primary);color:#fff}
+.reveal-action.secondary{background:var(--border-2);color:var(--text-2)}
+.reveal-action.gold{background:var(--gold-soft);color:var(--gold)}
+.reveal-action.tg{
+  background:linear-gradient(135deg,#0088cc,#00a3e0);color:#fff;
+}
+.reveal-action svg{width:16px;height:16px;flex-shrink:0}
+.reveal-action.playing{
+  background:var(--green);color:#fff;
+  animation:pulse-playing 1s ease-in-out infinite;
+}
+@keyframes pulse-playing{
+  0%,100%{opacity:1}
+  50%{opacity:.7}
+}
+
+.example{margin:14px 0;padding:14px;background:var(--border-2);border-radius:12px}
+.example-grid{display:flex;gap:6px;justify-content:center;margin-bottom:10px;direction:rtl}
+.example-tile{
+  width:38px;height:38px;display:grid;place-items:center;
+  border-radius:8px;font-family:'Cairo',sans-serif;
+  font-size:18px;font-weight:700;color:#fff;background:var(--gray);
+}
+.example-tile.correct{background:var(--green)}
+.example-tile.present{background:var(--yellow)}
+.example-tile.absent{background:var(--gray)}
+.example-text{font-size:13px;line-height:1.7;color:var(--text-2)}
+.example-text b{color:var(--text)}
+
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:22px}
+.stat{text-align:center;padding:12px 4px;background:var(--border-2);border-radius:12px}
+.stat-num{font-size:26px;font-weight:800;color:var(--text);line-height:1}
+.stat-lbl{font-size:10.5px;color:var(--text-3);margin-top:5px;font-weight:500}
+.dist{margin-top:16px}
+.dist-title{font-size:13.5px;font-weight:700;margin-bottom:12px;color:var(--text-2)}
+.dist-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:13px}
+.dist-num{width:16px;font-weight:700;text-align:center}
+.dist-bar{flex:1;height:24px;background:var(--border);border-radius:6px;overflow:hidden;position:relative}
+.dist-bar-fill{
+  height:100%;background:var(--gray);transition:width .6s var(--ease);
+  display:flex;align-items:center;justify-content:flex-start;
+  padding:0 8px;color:#fff;font-weight:700;font-size:12px;min-width:22px;
+}
+.dist-bar-fill.win{background:var(--green)}
+.stats-actions{margin-top:20px;text-align:center}
+.stats-actions button{
+  padding:10px 20px;border-radius:10px;background:var(--border-2);
+  color:var(--text-2);font-size:13px;font-weight:600;transition:.15s;
+}
+.stats-actions button:hover{background:var(--border);color:var(--text)}
+.stats-actions button:active{transform:scale(.97)}
+
+.setting{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 0;border-bottom:1px solid var(--border-2);
+}
+.setting:last-child{border-bottom:none}
+.setting-info{flex:1}
+.setting-info span{font-size:14.5px;font-weight:600;display:block}
+.setting-info small{font-size:11.5px;color:var(--text-3);display:block;margin-top:2px}
+.toggle{
+  width:48px;height:28px;border-radius:28px;background:var(--border);
+  position:relative;transition:.25s;flex-shrink:0;cursor:pointer;
+}
+.toggle::after{
+  content:'';position:absolute;top:3px;right:3px;
+  width:22px;height:22px;border-radius:50%;background:#fff;
+  transition:.25s;box-shadow:0 2px 6px rgba(0,0,0,.2);
+}
+.toggle.on{background:var(--primary)}
+.toggle.on::after{right:23px}
+.segmented{display:flex;gap:4px;background:var(--border-2);padding:4px;border-radius:11px}
+.segmented button{
+  padding:8px 14px;border-radius:8px;font-size:13px;font-weight:500;
+  color:var(--text-3);transition:.15s;flex:1;
+}
+.segmented button.active{
+  background:var(--card);color:var(--primary);font-weight:700;
+  box-shadow:0 2px 6px rgba(0,0,0,.06);
+}
+.segmented button:active{transform:scale(.97)}
+
+.result-banner{
+  position:fixed;top:70px;left:50%;
+  transform:translateX(-50%) translateY(-20px);
+  background:var(--card);border:1px solid var(--border);
+  border-radius:14px;padding:12px 20px;
+  box-shadow:0 12px 32px rgba(0,0,0,.15);
+  display:flex;align-items:center;gap:10px;
+  z-index:150;opacity:0;pointer-events:none;
+  transition:.3s var(--ease);
+  font-size:14px;font-weight:600;
+  max-width:92vw;
+}
+.result-banner.show{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:all}
+.result-banner.win{border-color:var(--green);color:var(--green)}
+.result-banner.lose{border-color:var(--yellow);color:var(--yellow)}
+.result-banner button{
+  margin-right:auto;font-size:12.5px;color:var(--primary);
+  font-weight:700;padding:5px 10px;border-radius:8px;
+  background:color-mix(in srgb,var(--primary) 12%,transparent);
+}
+.result-banner button:active{transform:scale(.95)}
+
+.confetti{
+  position:fixed;width:10px;height:10px;
+  pointer-events:none;z-index:300;
+  animation:confetti-fall 3s ease-out forwards;
+}
+@keyframes confetti-fall{
+  0%{transform:translateY(-20px) rotate(0);opacity:1}
+  100%{transform:translateY(100vh) rotate(720deg);opacity:0}
+}
+
+.toast{
+  position:fixed;top:80px;left:50%;
+  transform:translateX(-50%) translateY(-20px);
+  background:var(--text);color:var(--bg);
+  padding:11px 20px;border-radius:11px;
+  font-size:13.5px;font-weight:600;
+  z-index:400;opacity:0;pointer-events:none;
+  transition:.3s var(--ease);
+  box-shadow:0 12px 40px rgba(0,0,0,.25);
+  white-space:nowrap;max-width:90vw;overflow:hidden;text-overflow:ellipsis;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media(max-width:500px){
+  .app{padding:0 8px}
+  .topbar{padding:10px 2px;height:54px}
+  .brand{font-size:18px;gap:8px}
+  .brand-mark{width:32px;height:32px;font-size:17px;border-radius:10px}
+  .icon-btn{width:36px;height:36px}
+  .icon-btn svg{width:18px;height:18px}
+  .clue-card{padding:14px 16px;border-radius:14px}
+  .clue-meaning{font-size:16px}
+  .clue-cat{font-size:10px;padding:3px 10px}
+  .clue-hint{font-size:11px}
+  .grid{gap:3px;max-width:210px}
+  .row{gap:3px}
+  .tile{border-radius:5px;border-width:1.5px}
+  .keyboard{gap:4px}
+  .kb-row{gap:3px}
+  .key{font-size:14px;border-radius:7px;--key-height:42px}
+  .key.wide{font-size:10.5px}
+  .stats-grid{gap:6px}
+  .stat{padding:10px 2px}
+  .stat-num{font-size:22px}
+  .reveal-word{font-size:32px}
+  .reveal-ayah-text{font-size:17px}
+  .reveal-action{min-width:100px;padding:10px 12px;font-size:12px}
+}
+@media(max-height:720px){
+  .clue-card{padding:12px 14px}
+  .clue-meaning{font-size:15px}
+  .grid{max-width:200px}
+  .key{--key-height:40px}
+  .topbar{height:50px;padding:8px 2px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.01ms !important;
+    transition-duration:.01ms !important;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <header class="topbar">
+    <div>
+      <div class="brand">
+        <div class="brand-mark">ن</div>
+        <span>نور</span>
+      </div>
+      <div class="user-chip" id="userChip">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+        <span id="userName"></span>
+      </div>
+    </div>
+    <div class="topbar-actions">
+      <button class="icon-btn" id="helpBtn" aria-label="مساعدة">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+      </button>
+      <button class="icon-btn" id="statsBtn" aria-label="الإحصائيات">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6"/><rect x="12" y="8" width="3" height="10"/><rect x="17" y="5" width="3" height="13"/></svg>
+      </button>
+      <button class="icon-btn" id="themeBtn" aria-label="المظهر">
+        <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <button class="icon-btn" id="settingsBtn" aria-label="الإعدادات">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="game">
+    <div class="clue-card">
+      <div class="clue-card-inner">
+        <div class="clue-cat" id="clueCat">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          <span id="clueCatText">—</span>
+        </div>
+        <div class="clue-meaning" id="clueMeaning">—</div>
+        <div>
+          <span class="clue-length" id="clueLength">—</span>
+          <span class="clue-difficulty" id="clueDifficulty">—</span>
+          <span class="clue-hint" id="clueHint">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+            <span id="clueHintText">—</span>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid" id="grid" role="grid" aria-label="شبكة اللعب"></div>
+    <div class="keyboard" id="keyboard" role="group" aria-label="لوحة المفاتيح"></div>
+  </main>
+</div>
+
+<div class="result-banner" id="resultBanner"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="overlay" id="overlay"></div>
+
+<div class="modal" id="helpModal" role="dialog" aria-modal="true">
+  <div class="modal-head">
+    <h3>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+      كيف تلعب؟
+    </h3>
+    <button class="close-btn" data-close aria-label="إغلاق">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p style="font-size:14px;line-height:1.9;color:var(--text-2)">
+      في كل يوم كلمة قرآنية جديدة — <b>اسم من أسماء الله</b>، <b>نبي</b>، <b>سورة</b>، <b>مفردة قرآنية</b>، أو <b>مكان قرآني</b>.<br>
+      اقرأ <b>المعنى</b> والتلميح، ثم خمّن الكلمة عبر <b>6 محاولات</b>.
+    </p>
+    <div class="example">
+      <div class="example-grid">
+        <div class="example-tile correct">ن</div>
+        <div class="example-tile">و</div>
+        <div class="example-tile">ر</div>
+      </div>
+      <div class="example-text">حرف <b>ن</b> في مكانه الصحيح.</div>
+    </div>
+    <div class="example">
+      <div class="example-grid">
+        <div class="example-tile">ن</div>
+        <div class="example-tile present">و</div>
+        <div class="example-tile">ر</div>
+      </div>
+      <div class="example-text">حرف <b>و</b> موجود لكن في مكان آخر.</div>
+    </div>
+    <div class="example">
+      <div class="example-grid">
+        <div class="example-tile">ن</div>
+        <div class="example-tile">و</div>
+        <div class="example-tile absent">ر</div>
+      </div>
+      <div class="example-text">حرف <b>ر</b> غير موجود في الكلمة.</div>
+    </div>
+    <div style="margin-top:16px;font-size:12.5px;color:var(--text-3);padding:12px;background:var(--border-2);border-radius:10px;line-height:1.8">
+      <b style="color:var(--text-2)">💡 ملاحظة:</b> يُعامَل (أ إ آ ا) كحرف واحد، وكذلك (ة ه)، و(ى ي)، و(ؤ و)، و(ئ ي).
+    </div>
+    <div style="margin-top:12px;font-size:12.5px;color:var(--primary);padding:12px;background:var(--primary-soft);border-radius:10px;line-height:1.8;font-weight:600">
+      🎧 عند الفوز: استمع للآية بصوت قارئ، واقرأ التفسير الميسر.
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="statsModal" role="dialog" aria-modal="true">
+  <div class="modal-head">
+    <h3>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6"/><rect x="12" y="8" width="3" height="10"/><rect x="17" y="5" width="3" height="13"/></svg>
+      إحصائياتك
+    </h3>
+    <button class="close-btn" data-close aria-label="إغلاق">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="stats-grid">
+      <div class="stat"><div class="stat-num" id="stPlayed">0</div><div class="stat-lbl">لعبت</div></div>
+      <div class="stat"><div class="stat-num" id="stWinPct">0</div><div class="stat-lbl">% فوز</div></div>
+      <div class="stat"><div class="stat-num" id="stStreak">0</div><div class="stat-lbl">تسلسل</div></div>
+      <div class="stat"><div class="stat-num" id="stMaxStreak">0</div><div class="stat-lbl">الأقصى</div></div>
+    </div>
+    <div class="dist">
+      <div class="dist-title">توزيع المحاولات</div>
+      <div id="distBars"></div>
+    </div>
+    <div class="stats-actions">
+      <button id="newGameBtn">لعبة تجريبية جديدة</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="settingsModal" role="dialog" aria-modal="true">
+  <div class="modal-head">
+    <h3>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      الإعدادات
+    </h3>
+    <button class="close-btn" data-close aria-label="إغلاق">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="setting">
+      <div class="setting-info"><span>المظهر</span><small>الوضع الليلي أو الفاتح</small></div>
+      <div class="toggle" id="darkToggle" role="switch"></div>
+    </div>
+    <div class="setting">
+      <div class="setting-info"><span>الوضع الصعب</span><small>استخدم الأحرف المكشوفة</small></div>
+      <div class="toggle" id="hardToggle" role="switch"></div>
+    </div>
+    <div class="setting">
+      <div class="setting-info"><span>الاهتزاز</span><small>تفعيل الاهتزاز عند اللعب</small></div>
+      <div class="toggle on" id="hapticToggle" role="switch"></div>
+    </div>
+    <div class="setting" style="display:block">
+      <div class="setting-info" style="margin-bottom:10px"><span>حجم الأحرف</span></div>
+      <div class="segmented" id="sizeSeg">
+        <button data-v="sm">صغير</button>
+        <button data-v="md" class="active">متوسط</button>
+        <button data-v="lg">كبير</button>
+      </div>
+    </div>
+    <div class="setting" style="justify-content:center;padding-top:20px">
+      <button id="resetBtn" style="padding:10px 18px;background:var(--border-2);border-radius:10px;color:var(--text-2);font-size:13px;font-weight:600">إعادة تعيين الإحصائيات</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="revealModal" role="dialog" aria-modal="true">
+  <div class="modal-head">
+    <h3>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20"/></svg>
+      <span id="revealHeadTitle">أحسنت!</span>
+    </h3>
+    <button class="close-btn" data-close aria-label="إغلاق">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="reveal-hero">
+      <div class="reveal-icon" id="revealIcon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+      </div>
+      <div class="reveal-word" id="revealWord">—</div>
+      <div class="reveal-cat" id="revealCat">—</div>
+    </div>
+
+    <div class="reveal-meaning" id="revealMeaning">—</div>
+
+    <div class="reveal-ayah" id="revealAyah" style="display:none">
+      <div class="reveal-ayah-text" id="revealAyahText">—</div>
+      <div class="reveal-ayah-ref" id="revealAyahRef">—</div>
+    </div>
+
+    <div class="reveal-extended" id="revealExtended" style="display:none">
+      <div class="reveal-extended-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        التفسير الميسر
+      </div>
+      <div id="revealTafsirBody">
+        <div class="reveal-tafsir-loading">
+          <div class="spinner"></div>
+          <span>جاري تحميل التفسير...</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="reveal-actions">
+      <button class="reveal-action primary" id="revealPlayBtn">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        استمع للآية
+      </button>
+      <a class="reveal-action gold" id="revealReadSurahBtn" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        اقرأ السورة
+      </a>
+    </div>
+
+    <div class="reveal-actions" style="margin-top:8px">
+      <button class="reveal-action tg" id="revealShareTgBtn">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.27-.02-.11.02-1.93 1.23-5.46 3.62-.51.35-.98.52-1.39.51-.46-.01-1.35-.26-2.01-.48-.81-.27-1.46-.42-1.4-.88.03-.24.36-.49 1-.74 3.89-1.69 6.48-2.81 7.78-3.35 3.7-1.54 4.47-1.81 4.97-1.82.11 0 .36.03.52.16.14.12.18.28.2.44-.02.06.01.24 0 .37z"/></svg>
+        مشاركة عبر تيليغرام
+      </button>
+    </div>
+
+    <div style="margin-top:16px;text-align:center">
+      <button id="revealCloseBtn" style="padding:10px 24px;background:var(--border-2);color:var(--text-2);border-radius:11px;font-size:13.5px;font-weight:600">
+        إغلاق
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+/* =========================================================
+   Telegram Web App Integration
+   ========================================================= */
+const TG = window.Telegram?.WebApp;
+const isTelegram = !!(TG && TG.initData !== undefined);
+
+function initTelegram(){
+  if(!isTelegram) return false;
+  try{
+    TG.ready();
+    TG.expand();
+    if(TG.setHeaderColor){
+      TG.setHeaderColor('secondary_bg_color');
+    }
+    if(TG.enableClosingConfirmation){
+      TG.enableClosingConfirmation();
+    }
+    // اللاعب
+    const user = TG.initDataUnsafe?.user;
+    if(user){
+      const name = user.first_name + (user.last_name ? ' ' + user.last_name : '');
+      $('#userName').textContent = name;
+      $('#userChip').classList.add('show');
+      // اللعب من تيليغرام يعني تجاوز ثيم اللعبة
+      applyTelegramTheme();
+    }
+    // مراقبة تغيير الثيم
+    TG.onEvent?.('themeChanged', applyTelegramTheme);
+    return true;
+  }catch(e){
+    console.warn('Telegram init failed', e);
+    return false;
+  }
+}
+
+function applyTelegramTheme(){
+  if(!isTelegram) return;
+  try{
+    const isDark = TG.colorScheme === 'dark';
+    settings.theme = isDark ? 'dark' : 'light';
+    document.documentElement.dataset.theme = settings.theme;
+    // نأخذ اللون الأساسي من تيليغرام إذا متوفر
+    const bg = TG.themeParams?.bg_color;
+    const secondaryBg = TG.themeParams?.secondary_bg_color;
+    if(bg){
+      document.documentElement.style.setProperty('--tg-bg', bg);
+    }
+  }catch(e){}
+}
+
+function haptic(type){
+  if(!isTelegram || !settings.haptic) return;
+  try{
+    if(type === 'success' && TG.HapticFeedback){
+      TG.HapticFeedback.notificationOccurred('success');
+    }else if(type === 'error' && TG.HapticFeedback){
+      TG.HapticFeedback.notificationOccurred('error');
+    }else if(type === 'light' && TG.HapticFeedback){
+      TG.HapticFeedback.impactOccurred('light');
+    }else if(type === 'medium' && TG.HapticFeedback){
+      TG.HapticFeedback.impactOccurred('medium');
+    }
+  }catch(e){}
+}
+
+/* =========================================================
+   بنك الكلمات القرآنية
+   ========================================================= */
+const WORDS_DB = {
+  "categoryNames": {
+    "names_of_allah": "اسم من أسماء الله",
+    "prophets": "نبي كريم",
+    "surahs": "سورة قرآنية",
+    "quranic_terms": "مفردة قرآنية",
+    "places": "مكان قرآني"
+  },
+  "words": [
+    { "w": "النور", "n": "النور", "c": "names_of_allah", "m": "من أسمائه تعالى — نور السماوات والأرض", "h": "سورة تحمل اسمه", "s": 24, "a": 35, "d": "easy" },
+    { "w": "الصمد", "n": "الصمد", "c": "names_of_allah", "m": "السيد الذي يُصمد إليه في الحوائج", "h": "في سورة الإخلاص", "s": 112, "a": 2, "d": "easy" },
+    { "w": "الودود", "n": "الودود", "c": "names_of_allah", "m": "المحب لعباده الصالحين", "h": "في سورة هود والبروج", "s": 85, "a": 14, "d": "medium" },
+    { "w": "الملك", "n": "الملك", "c": "names_of_allah", "m": "المتصرف في ملكه بلا منازع", "h": "في آية الكرسي", "s": 59, "a": 23, "d": "easy" },
+    { "w": "الأول", "n": "الاول", "c": "names_of_allah", "m": "الذي ليس قبله شيء", "h": "من الأسماء في الحديث", "s": 57, "a": 3, "d": "easy" },
+    { "w": "الآخر", "n": "الاخر", "c": "names_of_allah", "m": "الذي ليس بعده شيء", "h": "في سورة الحديد", "s": 57, "a": 3, "d": "easy" },
+    { "w": "العليم", "n": "العليم", "c": "names_of_allah", "m": "المحيط علمه بكل شيء", "h": "يأتي في كثير من الآيات", "s": 66, "a": 2, "d": "easy" },
+    { "w": "الحكيم", "n": "الحكيم", "c": "names_of_allah", "m": "الذي أحكم خلقه وأتقن تدبيره", "h": "يُقرن مع العليم", "s": 24, "a": 18, "d": "easy" },
+    { "w": "نوح", "n": "نوح", "c": "prophets", "m": "أول رسول أُرسل إلى أهل الأرض، بنى السفينة", "h": "سورة تحمل اسمه", "s": 11, "a": 25, "d": "easy" },
+    { "w": "آدم", "n": "ادم", "c": "prophets", "m": "أبو البشر، خلقه الله بيده ونفخ فيه من روحه", "h": "أول الأنبياء", "s": 2, "a": 31, "d": "easy" },
+    { "w": "هود", "n": "هود", "c": "prophets", "m": "أُرسل إلى قوم عاد", "h": "سورة تحمل اسمه", "s": 11, "a": 50, "d": "easy" },
+    { "w": "صالح", "n": "صالح", "c": "prophets", "m": "أُرسل إلى قوم ثمود، وأُوتي ناقة الله", "h": "قصة الناقة", "s": 11, "a": 61, "d": "easy" },
+    { "w": "يونس", "n": "يونس", "c": "prophets", "m": "صاحب الحوت، نادى في الظلمات", "h": "سورة تحمل اسمه", "s": 21, "a": 87, "d": "easy" },
+    { "w": "يوسف", "n": "يوسف", "c": "prophets", "m": "صاحب الرؤيا، صار عزيزاً على خزائن مصر", "h": "أحسن القصص", "s": 12, "a": 7, "d": "easy" },
+    { "w": "أيوب", "n": "ايوب", "c": "prophets", "m": "ابتلاه الله فصبر، فردّ الله عليه صحته وأهله", "h": "نعم العبد", "s": 38, "a": 44, "d": "medium" },
+    { "w": "موسى", "n": "موسى", "c": "prophets", "m": "كليم الله، أنزلت عليه التوراة", "h": "في سورة القصص", "s": 4, "a": 164, "d": "easy" },
+    { "w": "عيسى", "n": "عيسى", "c": "prophets", "m": "روح الله وكلمته ألقاها إلى مريم", "h": "في سورة آل عمران", "s": 4, "a": 171, "d": "easy" },
+    { "w": "داود", "n": "داود", "c": "prophets", "m": "قتل جالوت، وأوتي الزبور والملك", "h": "سورة ص", "s": 2, "a": 251, "d": "medium" },
+    { "w": "يحيى", "n": "يحيى", "c": "prophets", "m": "سيد وحصور، لم نجعل له من قبل سمياً", "h": "في سورة مريم", "s": 19, "a": 12, "d": "medium" },
+    { "w": "مريم", "n": "مريم", "c": "prophets", "m": "الصديقة الطاهرة، أم عيسى عليه السلام", "h": "سورة تحمل اسمها", "s": 66, "a": 12, "d": "easy" },
+    { "w": "الفاتحة", "n": "الفاتحه", "c": "surahs", "m": "أم الكتاب والسبع المثاني", "h": "أول سورة في المصحف", "s": 1, "a": 2, "d": "easy" },
+    { "w": "البقرة", "n": "البقره", "c": "surahs", "m": "أطول سور القرآن، فيها آية الكرسي", "h": "مدنية", "s": 2, "a": 2, "d": "easy" },
+    { "w": "الرحمن", "n": "الرحمن", "c": "surahs", "m": "تُسمى عروس القرآن، فيها \"فبأي آلاء ربكما تكذبان\"", "h": "سورة مدنية", "s": 55, "a": 1, "d": "easy" },
+    { "w": "الملك", "n": "الملك", "c": "surahs", "m": "المانعة من عذاب القبر", "h": "تبدأ بـ \"تبارك\"", "s": 67, "a": 1, "d": "easy" },
+    { "w": "الكوثر", "n": "الكوثر", "c": "surahs", "m": "أقصر سور القرآن الكريم", "h": "ثلاث آيات", "s": 108, "a": 1, "d": "easy" },
+    { "w": "الفلق", "n": "الفلق", "c": "surahs", "m": "من المعوذتين، تُقرأ للتحصين", "h": "\"قل أعوذ برب الفلق\"", "s": 113, "a": 1, "d": "easy" },
+    { "w": "الناس", "n": "الناس", "c": "surahs", "m": "آخر سورة في المصحف، من المعوذتين", "h": "\"قل أعوذ برب الناس\"", "s": 114, "a": 1, "d": "easy" },
+    { "w": "الإخلاص", "n": "الاخلاص", "c": "surahs", "m": "تعدل ثلث القرآن الكريم", "h": "\"قل هو الله أحد\"", "s": 112, "a": 1, "d": "easy" },
+    { "w": "الكهف", "n": "الكهف", "c": "surahs", "m": "من قرأها أضاء له من النور ما بين الجمعتين", "h": "فيها أصحاب الكهف", "s": 18, "a": 1, "d": "medium" },
+    { "w": "الإيمان", "n": "الايمان", "c": "quranic_terms", "m": "التصديق الجازم بالله ورسله وكتبه واليوم الآخر", "h": "أصل الدين", "s": 49, "a": 15, "d": "medium" },
+    { "w": "التقوى", "n": "التقوى", "c": "quranic_terms", "m": "فعل الطاعات وترك المنكرات", "h": "خير الزاد", "s": 2, "a": 197, "d": "medium" },
+    { "w": "الصلاة", "n": "الصلاه", "c": "quranic_terms", "m": "الركن الثاني من أركان الإسلام", "h": "عمود الدين", "s": 4, "a": 103, "d": "easy" },
+    { "w": "الزكاة", "n": "الزكاه", "c": "quranic_terms", "m": "إخراج حق المال للفقراء والمساكين", "h": "الركن الثالث", "s": 2, "a": 43, "d": "easy" },
+    { "w": "الصبر", "n": "الصبر", "c": "quranic_terms", "m": "حبس النفس عن الجزع، وتوطينها على المكاره", "h": "\"إن الله مع الصابرين\"", "s": 8, "a": 46, "d": "easy" },
+    { "w": "الشكر", "n": "الشكر", "c": "quranic_terms", "m": "الاعتراف بالنعمة وحمد المنعم بها", "h": "\"لئن شكرتم لأزيدنكم\"", "s": 14, "a": 7, "d": "medium" },
+    { "w": "التوكل", "n": "التوكل", "c": "quranic_terms", "m": "صدق الاعتماد على الله مع الأخذ بالأسباب", "h": "\"وعلى الله فليتوكل المؤمنون\"", "s": 9, "a": 51, "d": "medium" },
+    { "w": "اليقين", "n": "اليقين", "c": "quranic_terms", "m": "العلم الذي لا يقبل الشك", "h": "\"واعبد ربك حتى يأتيك اليقين\"", "s": 15, "a": 99, "d": "medium" },
+    { "w": "التوبة", "n": "التوبه", "c": "quranic_terms", "m": "الرجوع إلى الله وترك الذنوب", "h": "سورة تحمل اسمها", "s": 2, "a": 222, "d": "medium" },
+    { "w": "الرحمة", "n": "الرحمه", "c": "quranic_terms", "m": "رقة تقتضي الإحسان إلى المرحوم", "h": "\"ورحمتي وسعت كل شيء\"", "s": 7, "a": 156, "d": "medium" },
+    { "w": "النعمة", "n": "النعمه", "c": "quranic_terms", "m": "ما يمنحه الله لعباده من خير", "h": "\"وما بكم من نعمة فمن الله\"", "s": 16, "a": 53, "d": "medium" },
+    { "w": "مكة", "n": "مكه", "c": "places", "m": "أم القرى، فيها المسجد الحرام والكعبة", "h": "تُسمى بكة أيضاً", "s": 48, "a": 24, "d": "easy" },
+    { "w": "المدينة", "n": "المدينه", "c": "places", "m": "طيبة الطيبة، دار الهجرة والأنصار", "h": "فيها المسجد النبوي", "s": 33, "a": 60, "d": "easy" },
+    { "w": "بدر", "n": "بدر", "c": "places", "m": "موقع أول معركة في الإسلام، يوم الفرقان", "h": "يوم الفرقان", "s": 3, "a": 123, "d": "easy" },
+    { "w": "الطور", "n": "الطور", "c": "places", "m": "الجبل الذي كلّم الله عليه موسى", "h": "سورة تحمل اسمه", "s": 95, "a": 2, "d": "medium" },
+    { "w": "سيناء", "n": "سيناء", "c": "places", "m": "أرض مباركة، فيها الوادي المقدس طوى", "h": "في سورة المؤمنون", "s": 23, "a": 20, "d": "medium" },
+    { "w": "الأعراف", "n": "الاعراف", "c": "places", "m": "سور بين الجنة والنار، أصحابه يعرفون الناس بسيماهم", "h": "سورة تحمل اسمه", "s": 7, "a": 46, "d": "medium" },
+    { "w": "الأحقاف", "n": "الاحقاف", "c": "places", "m": "كثبان الرمل في جنوب الجزيرة، مساكن قوم عاد", "h": "سورة تحمل اسمه", "s": 46, "a": 21, "d": "hard" }
+  ]
+};
+
+const WORDS = WORDS_DB.words.filter(x => {
+  const len = x.n.length;
+  return len >= 3 && len <= 7;
+});
+
+const KEY_ROWS = [
+  ['ض','ص','ث','ق','ف','غ','ع','ه','خ','ح','ج','د'],
+  ['ش','س','ي','ب','ل','ا','ت','ن','م','ك','ط'],
+  ['ذ','ر','ز','و','ة','ظ','ى','ء']
+];
+
+const DEFAULTS = { theme:'light', hard:false, size:'md', haptic:true };
+const RECITER = 'ar.alafasy';
+
+let settings = Object.assign({}, DEFAULTS, load('nour.settings') || {});
+let stats = Object.assign({
+  played:0, won:0, streak:0, maxStreak:0,
+  dist:[0,0,0,0,0,0],
+  lastDaily:'', lastDailyWin:false,
+}, load('nour.stats') || {});
+
+const game = {
+  answer:'', answerNorm:'',
+  entry:null, mode:'daily',
+  guesses:[], current:'',
+  currentRow:0, cols:5,
+  gameOver:false, won:false,
+};
+
+const tafsirCache = {};
+
+const player = {
+  el: null,
+  playing: false,
+};
+
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+function load(k){ try{const v=localStorage.getItem(k);return v?JSON.parse(v):null;}catch(e){return null;} }
+function save(k,v){ try{localStorage.setItem(k,JSON.stringify(v));}catch(e){} }
+function todayKey(){ const d=new Date(); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
+function seededRandom(seed){
+  let s = seed;
+  return function(){ s = (s * 9301 + 49297) % 233280; return s / 233280; };
+}
+function getDailyEntry(){
+  const d = new Date();
+  const seed = d.getFullYear()*10000 + (d.getMonth()+1)*100 + d.getDate();
+  const rnd = seededRandom(seed);
+  return WORDS[Math.floor(rnd() * WORDS.length)];
+}
+function getRandomEntry(){
+  return WORDS[Math.floor(Math.random() * WORDS.length)];
+}
+
+let toastTimer;
+function toast(msg){
+  const t = $('#toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'), 1800);
+}
+
+function getPuzzleNumber(){
+  const start = new Date('2025-01-01').getTime();
+  return Math.floor((Date.now() - start) / 86400000) + 1;
+}
+
+function getCatName(c){ return WORDS_DB.categoryNames[c] || c; }
+
+/* =========================================================
+   Audio
+   ========================================================= */
+async function fetchAyahAudioUrl(surah, ayah){
+  try{
+    const res = await fetch(`https://api.alquran.cloud/v1/ayah/${surah}:${ayah}/${RECITER}`);
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const j = await res.json();
+    if(j.code === 200 && j.data && j.data.audio) return j.data.audio;
+    throw new Error('No audio');
+  }catch(e){
+    console.warn('audio fetch failed', e);
+    return null;
+  }
+}
+
+async function playAyahAudio(surah, ayah, btn){
+  if(player.playing){
+    stopAudio();
+    if(btn) btn.classList.remove('playing');
+    return;
+  }
+  if(btn){
+    btn.classList.add('playing');
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg> جاري التشغيل...';
+  }
+  const url = await fetchAyahAudioUrl(surah, ayah);
+  if(!url){
+    toast('تعذّر تحميل الصوت');
+    if(btn){
+      btn.classList.remove('playing');
+      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> استمع للآية';
+    }
+    return;
+  }
+  if(!player.el){
+    player.el = new Audio();
+    player.el.addEventListener('ended', () => {
+      player.playing = false;
+      const b = $('#revealPlayBtn');
+      if(b){
+        b.classList.remove('playing');
+        b.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> استمع للآية';
+      }
+    });
+    player.el.addEventListener('error', () => {
+      player.playing = false;
+      const b = $('#revealPlayBtn');
+      if(b){
+        b.classList.remove('playing');
+        b.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> استمع للآية';
+      }
+    });
+  }
+  player.el.src = url;
+  player.el.play().then(() => {
+    player.playing = true;
+    if(btn) btn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg> إيقاف';
+  }).catch(() => {
+    toast('تعذّر تشغيل الصوت');
+    if(btn){
+      btn.classList.remove('playing');
+      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> استمع للآية';
+    }
+  });
+}
+
+function stopAudio(){
+  if(player.el){
+    player.el.pause();
+    player.el.currentTime = 0;
+  }
+  player.playing = false;
+}
+
+/* =========================================================
+   Tafsir & Ayah
+   ========================================================= */
+async function fetchTafsir(surah, ayah){
+  const key = `${surah}:${ayah}`;
+  if(tafsirCache[key]) return tafsirCache[key];
+  try{
+    const res = await fetch(`https://api.alquran.cloud/v1/ayah/${surah}:${ayah}/ar.muyassar`);
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const j = await res.json();
+    if(j.code === 200 && j.data && j.data.text){
+      tafsirCache[key] = j.data.text;
+      return j.data.text;
+    }
+    throw new Error('No tafsir');
+  }catch(e){
+    console.warn('tafsir fetch failed', e);
+    return null;
+  }
+}
+
+async function fetchAyahFull(surah, ayah){
+  try{
+    const res = await fetch(`https://api.alquran.cloud/v1/ayah/${surah}:${ayah}/quran-uthmani`);
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const j = await res.json();
+    if(j.code === 200 && j.data && j.data.text) return j.data.text;
+  }catch(e){}
+  return null;
+}
+
+async function loadTafsirInReveal(surah, ayah){
+  const body = $('#revealTafsirBody');
+  body.innerHTML = '<div class="reveal-tafsir-loading"><div class="spinner"></div><span>جاري تحميل التفسير...</span></div>';
+  const text = await fetchTafsir(surah, ayah);
+  if(text){
+    body.innerHTML = '<div class="reveal-tafsir-text">' + esc(text) + '</div>';
+  }else{
+    body.innerHTML = '<div class="reveal-tafsir-error">تعذّر تحميل التفسير.</div>';
+  }
+}
+
+function esc(s){
+  if(s == null) return '';
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+/* =========================================================
+   Build UI
+   ========================================================= */
+function buildGrid(){
+  const grid = $('#grid');
+  grid.innerHTML = '';
+  const cols = game.cols;
+  document.documentElement.style.setProperty('--cols', cols);
+  for(let r=0;r<6;r++){
+    const row = document.createElement('div');
+    row.className = 'row';
+    row.dataset.row = r;
+    for(let c=0;c<cols;c++){
+      const tile = document.createElement('div');
+      tile.className = 'tile';
+      tile.dataset.col = c;
+      row.appendChild(tile);
+    }
+    grid.appendChild(row);
+  }
+}
+
+function buildKeyboard(){
+  const kb = $('#keyboard');
+  kb.innerHTML = '';
+  KEY_ROWS.forEach((row, i) => {
+    const r = document.createElement('div');
+    r.className = 'kb-row';
+    if(i === KEY_ROWS.length - 1){
+      const enter = document.createElement('button');
+      enter.className = 'key wide';
+      enter.dataset.key = 'Enter';
+      enter.textContent = 'إدخال';
+      enter.addEventListener('click', e => { e.preventDefault(); handleKey('Enter'); });
+      r.appendChild(enter);
+    }
+    row.forEach(l => {
+      const k = document.createElement('button');
+      k.className = 'key';
+      k.dataset.key = l;
+      k.textContent = l;
+      k.setAttribute('aria-label', l);
+      k.addEventListener('click', e => { e.preventDefault(); handleKey(l); });
+      r.appendChild(k);
+    });
+    if(i === KEY_ROWS.length - 1){
+      const bs = document.createElement('button');
+      bs.className = 'key wide';
+      bs.dataset.key = 'Backspace';
+      bs.setAttribute('aria-label', 'حذف');
+      bs.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 5H9l-7 7 7 7h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2z"/><path d="M18 9l-6 6M12 9l6 6"/></svg>';
+      bs.addEventListener('click', e => { e.preventDefault(); handleKey('Backspace'); });
+      r.appendChild(bs);
+    }
+    kb.appendChild(r);
+  });
+}
+
+/* =========================================================
+   Game Logic
+   ========================================================= */
+function startGame(mode){
+  game.mode = mode || 'daily';
+  game.guesses = [];
+  game.current = '';
+  game.currentRow = 0;
+  game.gameOver = false;
+  game.won = false;
+
+  game.entry = (game.mode === 'daily') ? getDailyEntry() : getRandomEntry();
+  game.answer = game.entry.w;
+  game.answerNorm = game.entry.n;
+  game.cols = game.answerNorm.length;
+
+  buildGrid();
+  buildKeyboard();
+  resetKeyboardColors();
+  renderClue();
+
+  $('#resultBanner').classList.remove('show');
+}
+
+function renderClue(){
+  const e = game.entry;
+  $('#clueCatText').textContent = getCatName(e.c);
+  $('#clueMeaning').textContent = e.m;
+  $('#clueHintText').textContent = e.h;
+  $('#clueLength').textContent = 'عدد الأحرف: ' + game.cols;
+  const diff = $('#clueDifficulty');
+  diff.className = 'clue-difficulty ' + (e.d || 'easy');
+  diff.textContent = e.d === 'easy' ? 'سهل' : e.d === 'medium' ? 'متوسط' : 'صعب';
+}
+
+function resetKeyboardColors(){
+  $$('.key').forEach(k => k.classList.remove('correct','present','absent'));
+}
+
+function updateTile(row, col, letter){
+  const tile = document.querySelector(`.row[data-row="${row}"] .tile[data-col="${col}"]`);
+  if(!tile) return;
+  if(letter){ tile.textContent = letter; tile.classList.add('filled'); }
+  else{ tile.textContent = ''; tile.classList.remove('filled'); }
+}
+
+function updateRowDisplay(rowIndex, word){
+  for(let i=0;i<game.cols;i++){
+    updateTile(rowIndex, i, word[i] || '');
+  }
+}
+
+function checkGuess(guess, answer){
+  const g = guess.split('');
+  const a = answer.split('');
+  const n = g.length;
+  const result = new Array(n).fill('absent');
+  const used = new Array(n).fill(false);
+  for(let i=0;i<n;i++){
+    if(g[i] === a[i]){ result[i] = 'correct'; used[i] = true; }
+  }
+  for(let i=0;i<n;i++){
+    if(result[i] === 'correct') continue;
+    for(let j=0;j<n;j++){
+      if(!used[j] && g[i] === a[j]){ result[i] = 'present'; used[j] = true; break; }
+    }
+  }
+  return result;
+}
+
+function revealGuess(guess, result){
+  return new Promise(resolve => {
+    const rowIndex = game.currentRow;
+    const row = document.querySelector(`.row[data-row="${rowIndex}"]`);
+    for(let i=0;i<game.cols;i++){
+      setTimeout(() => {
+        const tile = row.querySelector(`.tile[data-col="${i}"]`);
+        if(tile) tile.classList.add(result[i]);
+      }, i * 220);
+    }
+    setTimeout(() => {
+      const priority = {correct:3, present:2, absent:1};
+      for(let i=0;i<game.cols;i++){
+        const letter = guess[i];
+        const key = document.querySelector(`.key[data-key="${letter}"]`);
+        if(key){
+          const currentClass = ['correct','present','absent'].find(c => key.classList.contains(c));
+          const newState = result[i];
+          if(!currentClass || priority[newState] > priority[currentClass]){
+            key.classList.remove('correct','present','absent');
+            key.classList.add(newState);
+          }
+        }
+      }
+      resolve();
+    }, game.cols * 220);
+  });
+}
+
+async function submitGuess(){
+  if(game.gameOver) return;
+  if(game.current.length < game.cols){
+    shakeRow(game.currentRow);
+    toast('أكمل ' + game.cols + ' أحرف');
+    haptic('error');
+    return;
+  }
+
+  const guess = game.current;
+  const normGuess = normalizeWord(guess);
+  const result = checkGuess(normGuess, game.answerNorm);
+
+  if(settings.hard && game.guesses.length > 0){
+    for(const prev of game.guesses){
+      for(let j=0;j<game.cols;j++){
+        if(prev.result[j] === 'correct'){
+          if(normGuess[j] !== normalizeWord(prev.word)[j]){
+            shakeRow(game.currentRow);
+            toast('الوضع الصعب: ضع "' + prev.word[j] + '" في مكانه');
+            haptic('error');
+            return;
+          }
+        }
+      }
+    }
+  }
+
+  game.guesses.push({word:guess, result});
+  haptic('light');
+  await revealGuess(guess, result);
+  game.currentRow++;
+  game.current = '';
+
+  const won = result.every(r => r === 'correct');
+  if(won){
+    game.gameOver = true; game.won = true;
+    haptic('success');
+    setTimeout(handleWin, 400);
+  }else if(game.currentRow >= 6){
+    game.gameOver = true; game.won = false;
+    haptic('error');
+    setTimeout(handleLose, 400);
+  }
+}
+
+function handleWin(){
+  const row = document.querySelector(`.row[data-row="${game.currentRow-1}"]`);
+  if(row) row.classList.add('win');
+
+  if(game.mode === 'daily' && stats.lastDaily !== todayKey()){
+    stats.played++; stats.won++; stats.streak++;
+    stats.maxStreak = Math.max(stats.maxStreak, stats.streak);
+    stats.dist[game.currentRow-1]++;
+    stats.lastDaily = todayKey();
+    stats.lastDailyWin = true;
+    save('nour.stats', stats);
+  }
+  fireConfetti();
+  setTimeout(() => showReveal(true), 800);
+}
+
+function handleLose(){
+  if(game.mode === 'daily' && stats.lastDaily !== todayKey()){
+    stats.played++; stats.streak = 0;
+    stats.lastDaily = todayKey();
+    stats.lastDailyWin = false;
+    save('nour.stats', stats);
+  }
+  setTimeout(() => showReveal(false), 500);
+}
+
+function showReveal(win){
+  const e = game.entry;
+  $('#revealHeadTitle').textContent = win ? 'أحسنت! 🎉' : 'كانت الكلمة:';
+  $('#revealIcon').innerHTML = win
+    ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>'
+    : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>';
+  $('#revealWord').textContent = e.w;
+  $('#revealCat').textContent = getCatName(e.c);
+  $('#revealMeaning').textContent = e.m;
+
+  if(e.s && e.a){
+    $('#revealAyah').style.display = '';
+    $('#revealAyahText').textContent = '﴿ ' + e.w + ' ﴾';
+    $('#revealAyahRef').textContent = 'سورة ' + (e.s) + ' • الآية ' + (e.a);
+
+    fetchAyahFull(e.s, e.a).then(text => {
+      if(text) $('#revealAyahText').textContent = text;
+    });
+
+    $('#revealExtended').style.display = '';
+    loadTafsirInReveal(e.s, e.a);
+
+    $('#revealReadSurahBtn').href = `https://quran.com/${e.s}/${e.a}`;
+    $('#revealPlayBtn').onclick = () => playAyahAudio(e.s, e.a, $('#revealPlayBtn'));
+
+    if(win){
+      setTimeout(() => playAyahAudio(e.s, e.a, $('#revealPlayBtn')), 1200);
+    }
+  }else{
+    $('#revealAyah').style.display = 'none';
+    $('#revealExtended').style.display = 'none';
+    $('#revealPlayBtn').style.display = 'none';
+    $('#revealReadSurahBtn').style.display = 'none';
+  }
+
+  $('#revealShareTgBtn').onclick = shareViaTelegram;
+
+  openModal('#revealModal');
+}
+
+function shakeRow(rowIndex){
+  const row = document.querySelector(`.row[data-row="${rowIndex}"]`);
+  if(!row) return;
+  row.classList.remove('shake');
+  void row.offsetWidth;
+  row.classList.add('shake');
+  setTimeout(() => row.classList.remove('shake'), 500);
+}
+
+function fireConfetti(){
+  const colors = ['#0e6b5c','#12917c','#2dd4bf','#d4a017','#c9a22e','#b8860b'];
+  for(let i=0;i<70;i++){
+    const c = document.createElement('div');
+    c.className = 'confetti';
+    c.style.left = Math.random()*100 + 'vw';
+    c.style.background = colors[Math.floor(Math.random()*colors.length)];
+    const size = 6 + Math.random()*8;
+    c.style.width = c.style.height = size + 'px';
+    c.style.borderRadius = Math.random() > .5 ? '50%' : '2px';
+    c.style.animationDelay = (Math.random()*.5) + 's';
+    c.style.animationDuration = (2 + Math.random()*1.5) + 's';
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 4000);
+  }
+}
+
+function normalizeWord(s){
+  if(s == null) return '';
+  return String(s)
+    .replace(/[\u0623\u0625\u0622\u0671]/g, '\u0627')
+    .replace(/\u0629/g, '\u0647')
+    .replace(/\u0649/g, '\u064A')
+    .replace(/\u0624/g, '\u0648')
+    .replace(/\u0626/g, '\u064A');
+}
+
+function handleKey(key){
+  if(game.gameOver){
+    if(key === 'Enter'){ startGame('practice'); toast('لعبة جديدة'); }
+    return;
+  }
+  if(key === 'Enter'){ submitGuess(); return; }
+  if(key === 'Backspace'){
+    if(game.current.length > 0){
+      game.current = game.current.slice(0, -1);
+      updateRowDisplay(game.currentRow, game.current);
+    }
+    return;
+  }
+  if(game.current.length >= game.cols) return;
+  if(!/^[\u0621-\u064A]$/.test(key)) return;
+  game.current += key;
+  updateTile(game.currentRow, game.current.length - 1, key);
+}
+
+document.addEventListener('keydown', e => {
+  if(e.ctrlKey || e.metaKey || e.altKey) return;
+  if(e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  if(e.key === 'Enter'){ e.preventDefault(); handleKey('Enter'); return; }
+  if(e.key === 'Backspace'){ e.preventDefault(); handleKey('Backspace'); return; }
+  if(/^[\u0621-\u064A]$/.test(e.key)){ e.preventDefault(); handleKey(e.key); }
+});
+
+/* =========================================================
+   Share
+   ========================================================= */
+function buildShareText(){
+  const emoji = {correct:'🟩', present:'🟨', absent:'⬛'};
+  const title = 'نور #' + getPuzzleNumber();
+  const score = game.won ? game.guesses.length : 'X';
+  const lines = [title + ' ' + score + '/6', ''];
+  game.guesses.forEach(g => lines.push(g.result.map(r => emoji[r]).join('')));
+  return lines.join('\n');
+}
+
+async function shareViaTelegram(){
+  const text = buildShareText();
+  // داخل تيليغرام: نستخدم switchInlineQuery
+  if(isTelegram && TG.switchInlineQuery){
+    try{
+      TG.switchInlineQuery(text, ['users', 'groups', 'channels']);
+      haptic('medium');
+      return;
+    }catch(e){}
+  }
+  // خارج تيليغرام أو فشل: نجرب Web Share API
+  if(navigator.share){
+    try{ await navigator.share({title:'نور', text}); return; }catch(e){}
+  }
+  // fallback: نسخ
+  try{
+    await navigator.clipboard.writeText(text);
+    toast('تم نسخ النتيجة ✓');
+    haptic('success');
+  }catch(e){
+    toast('تعذّر النسخ');
+  }
+}
+
+async function shareResult(){
+  return shareViaTelegram();
+}
+
+/* =========================================================
+   Modals
+   ========================================================= */
+function openModal(sel){
+  $('#overlay').classList.add('show');
+  $$('.modal').forEach(m => m.classList.remove('show'));
+  $(sel).classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+function closeModals(){
+  $('#overlay').classList.remove('show');
+  $$('.modal').forEach(m => m.classList.remove('show'));
+  document.body.style.overflow = '';
+  stopAudio();
+  const b = $('#revealPlayBtn');
+  if(b){
+    b.classList.remove('playing');
+    b.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> استمع للآية';
+  }
+}
+
+/* =========================================================
+   Stats
+   ========================================================= */
+function renderStats(){
+  $('#stPlayed').textContent = stats.played;
+  $('#stWinPct').textContent = stats.played ? Math.round((stats.won/stats.played)*100) : 0;
+  $('#stStreak').textContent = stats.streak;
+  $('#stMaxStreak').textContent = stats.maxStreak;
+
+  const max = Math.max(1, ...stats.dist);
+  const bars = $('#distBars');
+  bars.innerHTML = '';
+  for(let i=0;i<6;i++){
+    const count = stats.dist[i];
+    const pct = (count / max) * 100;
+    const isWinRow = game.won && i === game.currentRow - 1;
+    const row = document.createElement('div');
+    row.className = 'dist-row';
+    row.innerHTML = `
+      <div class="dist-num">${i+1}</div>
+      <div class="dist-bar">
+        <div class="dist-bar-fill ${isWinRow ? 'win' : ''}" style="width:${Math.max(pct, 8)}%">${count || ''}</div>
+      </div>`;
+    bars.appendChild(row);
+  }
+}
+
+/* =========================================================
+   Theme & Sizes
+   ========================================================= */
+function applyTheme(){
+  document.documentElement.dataset.theme = settings.theme;
+  const meta = document.querySelector('meta[name=theme-color]');
+  if(meta) meta.content = settings.theme === 'dark' ? '#0f151c' : '#faf7f0';
+  const icon = $('#themeIcon');
+  if(icon){
+    icon.innerHTML = settings.theme === 'dark'
+      ? '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>'
+      : '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+  }
+  $('#darkToggle')?.classList.toggle('on', settings.theme === 'dark');
+  // داخل تيليغرام، نحدّث الهيدر
+  if(isTelegram && TG.setHeaderColor){
+    try{ TG.setHeaderColor(settings.theme === 'dark' ? '#0f151c' : '#faf7f0'); }catch(e){}
+  }
+}
+
+function applySizes(){
+  const sizes = {
+    sm:'clamp(11px,calc(70px / var(--cols)),16px)',
+    md:'clamp(13px,calc(85px / var(--cols)),19px)',
+    lg:'clamp(15px,calc(100px / var(--cols)),23px)'
+  };
+  document.documentElement.style.setProperty('--tile-size', sizes[settings.size]);
+}
+
+/* =========================================================
+   Init
+   ========================================================= */
+function init(){
+  // تيليغرام أولاً
+  initTelegram();
+
+  applyTheme();
+  applySizes();
+  buildKeyboard();
+  startGame('daily');
+
+  $('#helpBtn').addEventListener('click', e => { e.preventDefault(); openModal('#helpModal'); });
+  $('#statsBtn').addEventListener('click', e => { e.preventDefault(); renderStats(); openModal('#statsModal'); });
+  $('#settingsBtn').addEventListener('click', e => { e.preventDefault(); openModal('#settingsModal'); });
+  $('#themeBtn').addEventListener('click', e => {
+    e.preventDefault();
+    settings.theme = settings.theme === 'dark' ? 'light' : 'dark';
+    save('nour.settings', settings);
+    applyTheme();
+  });
+  $('#overlay').addEventListener('click', closeModals);
+  $$('[data-close]').forEach(b => b.addEventListener('click', e => { e.preventDefault(); closeModals(); }));
+
+  $('#darkToggle').addEventListener('click', e => {
+    e.preventDefault();
+    settings.theme = settings.theme === 'dark' ? 'light' : 'dark';
+    save('nour.settings', settings);
+    applyTheme();
+  });
+  $('#hardToggle').addEventListener('click', e => {
+    e.preventDefault();
+    settings.hard = !settings.hard;
+    save('nour.settings', settings);
+    $('#hardToggle').classList.toggle('on', settings.hard);
+  });
+  $('#hardToggle').classList.toggle('on', settings.hard);
+
+  $('#hapticToggle').addEventListener('click', e => {
+    e.preventDefault();
+    settings.haptic = !settings.haptic;
+    save('nour.settings', settings);
+    $('#hapticToggle').classList.toggle('on', settings.haptic);
+  });
+  $('#hapticToggle').classList.toggle('on', settings.haptic);
+
+  $$('#sizeSeg button').forEach(b => {
+    b.addEventListener('click', e => {
+      e.preventDefault();
+      settings.size = b.dataset.v;
+      save('nour.settings', settings);
+      $$('#sizeSeg button').forEach(x => x.classList.toggle('active', x === b));
+      applySizes();
+    });
+  });
+  $$('#sizeSeg button').forEach(b => b.classList.toggle('active', b.dataset.v === settings.size));
+
+  $('#resetBtn').addEventListener('click', e => {
+    e.preventDefault();
+    if(confirm('هل أنت متأكد؟ سيتم حذف كل الإحصائيات.')){
+      stats = {played:0, won:0, streak:0, maxStreak:0, dist:[0,0,0,0,0,0], lastDaily:'', lastDailyWin:false};
+      save('nour.stats', stats);
+      renderStats();
+      toast('تم إعادة التعيين');
+    }
+  });
+
+  $('#newGameBtn').addEventListener('click', e => {
+    e.preventDefault();
+    closeModals();
+    startGame('practice');
+    toast('لعبة تجريبية جديدة');
+  });
+
+  $('#revealShareTgBtn').addEventListener('click', e => { e.preventDefault(); shareViaTelegram(); });
+  $('#revealCloseBtn').addEventListener('click', e => { e.preventDefault(); closeModals(); });
+}
+
+document.addEventListener('DOMContentLoaded', init);
+})();
+</script>
+</body>
+</html>
